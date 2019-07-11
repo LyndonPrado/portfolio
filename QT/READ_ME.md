@@ -7,4 +7,4 @@ Name: Lyndon Prado
 
 
 ## Project List
-* videoAndImageProcessing - File Location: ./QT_OpenCV/videoAndImageProcessing/
+* videoAndImageProcessing - File Location: ./QT_OpenCV/videoAndImageProcessing/Object_Recognition/

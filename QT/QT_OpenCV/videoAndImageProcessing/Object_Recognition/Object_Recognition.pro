@@ -24,8 +24,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+        opencvwidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+            opencvwidget.h
 
 FORMS    += mainwindow.ui
+
+
+INCLUDEPATH += D:\opencv\release\install\include
+
+#Note: must build libraries using cmake for mingw compiler
+LIBS += D:\opencv\release\install\x64\mingw\bin\libopencv_calib3d249.dll
+LIBS += D:\opencv\release\install\x64\mingw\bin\libopencv_contrib249.dll
+LIBS += D:\opencv\release\install\x64\mingw\bin\libopencv_core249.dll
+LIBS += D:\opencv\release\install\x64\mingw\bin\libopencv_highgui249.dll
+LIBS += D:\opencv\release\install\x64\mingw\bin\libopencv_imgproc249.dll
+LIBS += D:\opencv\release\install\x64\mingw\bin\libopencv_features2d249.dll
+
