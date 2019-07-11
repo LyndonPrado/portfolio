@@ -25,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        opencvwidget.cpp
+        opencvwidget.cpp \
+    imageprocessing.cpp
 
 HEADERS  += mainwindow.h \
-            opencvwidget.h
+            opencvwidget.h \
+    imageprocessing.h
 
 FORMS    += mainwindow.ui
 
