@@ -35,13 +35,9 @@ class openCVWidget : public QWidget
 public:
     explicit openCVWidget(QWidget *parent = 0) : QWidget(parent)
     {
-        processing = new imageProcessing();
-        connect(processing,SIGNAL(returnImage(cv::Mat,processType)),this,SLOT(set_image(cv::Mat,processType)));
         connect(this,SIGNAL(image_ready(QImage)),this,SLOT(set_image(QImage)));
     }
     ~openCVWidget(){
-        delete cap;
-        delete processing;
     }
 
     QSize sizeHint() const {return imageToDraw.size();}
@@ -57,20 +53,6 @@ public slots:
     void set_image(const cv::Mat& img)
     {
         imageToDraw = QImage(img.data, img.cols,img.rows,img.cols*3,QImage::Format_RGB888);
-    }
-
-    void set_image(const cv::Mat img,processType workDone)
-    {
-        QMutex mutex;
-        if(mutex.tryLock()){
-            qDebug() << "set_image!";
-            imageToDraw = QImage(img.data, img.cols,img.rows,img.cols*3,QImage::Format_RGB888);
-        }
-        else
-        {
-            imageToDraw = QPixmap(100,200).toImage();
-        }
-        mutex.unlock();
     }
 
     void showImage(const cv::Mat& image){
@@ -114,8 +96,7 @@ public slots:
         cv::cvtColor(frame,matBuffer,CV_BGR2RGB);
         assert(matBuffer.isContinuous());
         //let thresholding work happen in another thread
-        std::thread thread_obj (threshold,std::ref(matBuffer));
-        thread_obj.join();
+        imageProcessing::thresholdImage(matBuffer);
         emit image_ready(QImage(matBuffer.data, matBuffer.cols,matBuffer.rows,matBuffer.cols*3,QImage::Format_RGB888));
         this->setFixedSize(frame.cols,frame.rows);
         repaint();
@@ -136,7 +117,6 @@ protected:
     QTimer* imageTimer;
     cv::VideoCapture* cap = nullptr;
     bool init = false;
-    imageProcessing* processing;
 };
 
 #endif // OPENCVWIDGET_H
