@@ -35,6 +35,7 @@ class openCVWidget : public QWidget
 public:
     explicit openCVWidget(QWidget *parent = 0) : QWidget(parent)
     {
+        processing = new imageProcessing(this);
         connect(this,SIGNAL(image_ready(QImage)),this,SLOT(set_image(QImage)));
     }
     ~openCVWidget(){
@@ -53,6 +54,10 @@ public slots:
     void set_image(const cv::Mat& img)
     {
         imageToDraw = QImage(img.data, img.cols,img.rows,img.cols*3,QImage::Format_RGB888);
+    }
+
+    void setImageProcessing(bool turnOn){
+        this->useImageProcessing = turnOn;
     }
 
     void showImage(const cv::Mat& image){
@@ -95,13 +100,28 @@ public slots:
         }
         cv::cvtColor(frame,matBuffer,CV_BGR2RGB);
         assert(matBuffer.isContinuous());
-        //let thresholding work happen in another thread
-        imageProcessing::thresholdImage(matBuffer);
+
+        if(useImageProcessing){
+            //let thresholding work happen in another thread
+            processing->thresholdImage(matBuffer);
+        }
         emit image_ready(QImage(matBuffer.data, matBuffer.cols,matBuffer.rows,matBuffer.cols*3,QImage::Format_RGB888));
         this->setFixedSize(frame.cols,frame.rows);
         repaint();
         if(cv::waitKey(1) >= 0) return;
     }
+    int getLowThresholdMaxValue()
+    {
+        return this->processing->getLowThresholdMax();
+    }
+
+    void setLowThresholdValue(int value)
+    {
+        emit this->processing->setLowThreshold(value);
+    }
+
+
+
 protected:
     void paintEvent(QPaintEvent* /*event*/){
         //Display the image
@@ -116,7 +136,9 @@ protected:
     cv::Mat matBuffer;
     QTimer* imageTimer;
     cv::VideoCapture* cap = nullptr;
-    bool init = false;
+    bool useImageProcessing = false;
+private:
+    imageProcessing* processing;
 };
 
 #endif // OPENCVWIDGET_H

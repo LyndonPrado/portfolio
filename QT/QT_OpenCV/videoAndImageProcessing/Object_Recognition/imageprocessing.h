@@ -34,14 +34,15 @@ typedef enum {
     EDGE_DETECTION
 }processType;
 
-class processWorker
+class processWorker: public QObject
 {
+    Q_OBJECT
 public:
-    processWorker()
+    explicit processWorker(QObject* parent = 0):QObject(parent)
     {
     }
 
-    static void run(cv::Mat &imageToProcess,processType typeOfWork)
+    void run(cv::Mat &imageToProcess,processType typeOfWork)
     {
         QMutex mutex;
         mutex.lock();
@@ -58,7 +59,7 @@ public:
             thread_cvt_col.join();
             std::thread thread_blur(blur,std::ref(src_gray),std::ref(detected_edges),3,3);
             thread_blur.join();
-            std::thread thread_canny(canny,std::ref(detected_edges),std::ref(detected_edges),50,150);
+            std::thread thread_canny(canny,std::ref(detected_edges),std::ref(detected_edges),lowThreshold,lowThreshold*ratio);
             thread_canny.join();
             dst = cv::Scalar::all(0);
             imageToProcess.copyTo(dst,detected_edges);
@@ -67,7 +68,7 @@ public:
         }
         case BLUR:
             qDebug() << "BLUR";
-            cv::blur(imageToProcess,imageToProcess,cv::Size(3,3));
+            cv::blur(imageToProcess,imageToProcess,cv::Size(9,9));
             break;
         case EDGE_DETECTION:
             Q_ASSERT_X(false,"run","EDGE_DETECTION not implemented yet!");
@@ -77,16 +78,47 @@ public:
         }
         mutex.unlock();
     }
+
+
+
+    int getLowThresholdMax() const
+    {
+        return lowThresholdMax;
+    }
+
+public slots:
+    void setLowThreshold(int lowThreshold)
+    {
+        Q_ASSERT_X(lowThreshold >= 0 && lowThreshold <= lowThresholdMax,"setLowThreshold","threshold out of range!");
+        this->lowThreshold = lowThreshold;
+    }
+
+private:
+    int const lowThresholdMax = 100;
+    int lowThreshold = 50;
+    int ratio = 3;
 };
 
-class imageProcessing
+class imageProcessing: public QObject
 {
+    Q_OBJECT
 public:
+    explicit imageProcessing(QObject* parent = 0):QObject(parent)
+    {
+        worker = new processWorker(this);
+        connect(this,SIGNAL(setLowThreshold(int)),worker,SLOT(setLowThreshold(int)));
+    }
 
-    static void thresholdImage(cv::Mat &raw){
-        std::thread thread_threshold (processWorker::run,std::ref(raw),CANNY_THRESHOLDING);
+    void thresholdImage(cv::Mat &raw){
+        std::thread thread_threshold (processWorker::run,worker,std::ref(raw),CANNY_THRESHOLDING);
         thread_threshold.join();
     }
+
+    int getLowThresholdMax(){return this->worker->getLowThresholdMax();}
+signals:
+    void setLowThreshold(int lowThreshold);
+private:
+    processWorker* worker;
 };
 
 
