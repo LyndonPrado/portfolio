@@ -1,5 +1,6 @@
 package com.example.lyndon.portfolio_app_java
 
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.recyclerview.R.attr.layoutManager
@@ -7,14 +8,19 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import java.util.*
 import android.util.Log
+import android.widget.VideoView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.video_background.*
+
 class MainActivity : AppCompatActivity() {
     private val TAG = "RecylerViewAdapter"
+    private final val VIDEO_BACKGROUND:String = "background_video"
 
     //vars
     private val mNames = ArrayList<String>()
-    private val mImageUrls = ArrayList<String>()
-
+    private val mImageIds = ArrayList<Int>()
+    private val mImageText = ArrayList<String>()
+    private lateinit var mbackgroundVid:VideoView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -22,22 +28,43 @@ class MainActivity : AppCompatActivity() {
         // Example of a call to a native method
         sample_text.text = stringFromJNI()
         initImage()
+        initBackgroundVideo()
     }
 
+    fun initBackgroundVideo(){
+        Log.d(TAG,"initBackgroundVideo")
 
+        mbackgroundVid = findViewById<VideoView>(R.id.video_view)
+        var videoUri:Uri = getMedia(VIDEO_BACKGROUND)
+        mbackgroundVid.setVideoURI(videoUri)
+        mbackgroundVid.holder.setSizeFromLayout();
+        mbackgroundVid.start()
+    }
+
+    fun getMedia(arg: String): Uri {
+        return Uri.parse("android.resource://" + packageName + "/raw/" + arg)
+    }
     fun initImage() {
         Log.d(TAG,"initImageBitmaps:  preparing bitmaps.")
-        mImageUrls.add("https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwizkO74-MfjAhVaf30KHf9UBkMQjRx6BAgBEAU&url=https%3A%2F%2Fwww.pexels.com%2Fsearch%2Fflower%2F&psig=AOvVaw1-XgHqcPQSci4ulW_o1n89&ust=1563864915053564")
-        mNames.add("blue flower")
-        mImageUrls.add("https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj1hc6S-cfjAhWCSH0KHRVAATkQjRx6BAgBEAU&url=https%3A%2F%2Fwww.pexels.com%2Fsearch%2Fnature%2F&psig=AOvVaw1-XgHqcPQSci4ulW_o1n89&ust=1563864915053564")
-        mNames.add("beach")
+        mImageIds.add(R.drawable.profile_picture);
+        mNames.add("Lyndon Prado")
+        mImageText.add("Hello Guys! This is my portfolio application, displaying my basic skills in developing an" +
+                " android application.");
+        mImageIds.add(R.drawable.about_me_picture);
+        mNames.add("About Me")
+        mImageText.add("Im still in the process of gaining more skills in the area of Android Development. This is because" +
+                " my main area of focus is in IoT development, with having most of my experience in developing embedded " +
+                " applications and desktop applications in the C++ programming language. I am very adaptable and should be " +
+                " able to pick up any technology given some time. I am language agnostic, so I can easily pick up any programming" +
+                " language to learn ")
+
 
         initRecyclerView()
     }
     fun initRecyclerView(){
         Log.d(TAG,"initRecyclerView")
         var recyclerView: RecyclerView = findViewById<RecyclerView>(R.id.recyler_view)
-        var adapter: RecylerViewAdapter = RecylerViewAdapter(this, mNames,mImageUrls)
+        var adapter: RecylerViewAdapter = RecylerViewAdapter(this, mNames,mImageIds,mImageText)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
     }

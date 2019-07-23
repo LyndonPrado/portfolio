@@ -2,7 +2,6 @@ package com.example.lyndon.portfolio_app_java;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
@@ -21,12 +19,14 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
     private static final String TAG = "RecylerViewAdapter";
 
     private ArrayList<String> mImageNames = new ArrayList<>();
-    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<Integer> mImagesId = new ArrayList<>();
+    private ArrayList<String> mText = new ArrayList<>();
     private Context mContext;
 
-    public RecylerViewAdapter(Context mContext, ArrayList<String> mImageNames, ArrayList<String> mImages) {
+    public RecylerViewAdapter(Context mContext, ArrayList<String> mImageNames, ArrayList<Integer> mImagesId, ArrayList<String> mText) {
         this.mImageNames = mImageNames;
-        this.mImages = mImages;
+        this.mImagesId = mImagesId;
+        this.mText = mText;
         this.mContext = mContext;
     }
 
@@ -44,10 +44,12 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
 //        Glide.with(mContext)
 //                .asBitmap()
 //                .load(mImages.get(i))
-//                .into(viewHolder.image);
-        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(R.id.profile_picture);
-        viewHolder.image = view;
-        viewHolder.imageName.setText(mImageNames.get(i));
+//                .into(viewHolder.section_picture);
+//        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(R.id.Section_Picture);
+        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(this.mImagesId.get(i));
+        viewHolder.section_picture = view;
+        viewHolder.section_title.setText(mImageNames.get(i));
+        viewHolder.section_text.setText(mText.get(i));
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener(){
                @Override
                public void onClick(View view) {
@@ -65,15 +67,16 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        CircularImageView image;
-        TextView imageName;
+        CircularImageView section_picture;
+        TextView section_title;
+        TextView section_text;
         RelativeLayout parentLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.profile_picture);
-            imageName = itemView.findViewById(R.id.about_me_title);
+            section_picture = itemView.findViewById(R.id.Section_Picture);
+            section_title = itemView.findViewById(R.id.title_of_section);
+            section_text = itemView.findViewById(R.id.section_text);
             parentLayout = itemView.findViewById(R.id.parent_layout);
-
         }
     }
 }
