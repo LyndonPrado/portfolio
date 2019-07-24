@@ -51,7 +51,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
 //                .into(viewHolder.section_picture);
 //        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(R.id.Section_Picture);
 //        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(this.mImagesId.get(i));
-        Drawable d = mContext.getDrawable(this.mImagesId.get(i));
+        Drawable d = mContext.getResources().getDrawable(this.mImagesId.get(i));
         viewHolder.section_picture.setImageDrawable(d);
         viewHolder.section_title.setText(mImageNames.get(i));
         viewHolder.section_text.setText(mText.get(i));
