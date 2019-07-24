@@ -2,7 +2,10 @@ package com.example.lyndon.portfolio_app_java;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +41,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
         return holder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         Log.d(TAG,"onBindViewHolder: called.");
@@ -46,8 +50,9 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
 //                .load(mImages.get(i))
 //                .into(viewHolder.section_picture);
 //        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(R.id.Section_Picture);
-        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(this.mImagesId.get(i));
-        viewHolder.section_picture = view;
+//        CircularImageView view = (CircularImageView)((Activity)this.mContext).findViewById(this.mImagesId.get(i));
+        Drawable d = mContext.getDrawable(this.mImagesId.get(i));
+        viewHolder.section_picture.setImageDrawable(d);
         viewHolder.section_title.setText(mImageNames.get(i));
         viewHolder.section_text.setText(mText.get(i));
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener(){
