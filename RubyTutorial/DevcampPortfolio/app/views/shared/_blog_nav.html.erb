@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark blog-nav ">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav mr-auto">
+            <%= nav_helper 'nav-link', 'li' %>
+            <%= login_helper 'nav-link' %>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+<div class="blog-masthead">
+      <div class="container">
+      <!--  <nav class="nav blog-nav">
+          <%= link_to "Home", root_path , class: 'nav-link'%>
+          <%= link_to "About", about_path , class: 'nav-link'%>
+          <%= link_to "Contact", contact_path , class: 'nav-link'%>
+          <%= link_to "Blog", blogs_path , class: 'nav-link'%>
+          <%= link_to "Portfolio", portfolios_path , class: 'nav-link'%>
+          <%= nav_helper 'nav-link', 'span' %>
+          <%= login_helper 'nav-link'%>
+         </nav>  -->
+
+         <div class = "collapse navbar-collapse navbar-dark bg-dark" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <%= nav_helper 'nav-link', 'li' %>
+            <%= login_helper 'nav-link' %>
+          </ul>
+         </div>
+      </div>
+</div>
+
+
+
+    
